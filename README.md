@@ -17,14 +17,16 @@ This Python script pseudonymizes text data using `spaCy` and `Faker`. The script
 - `spaCy`
 - `spaCy-transformers`
 - `Faker`
+- GPU with CUDA Toolkit 12
 
 ## Installation
 
 1. Install the required libraries:
     ```sh
-    pip install spacy
-    pip install spacy-transformers
-    pip install faker
+    conda create -n venv
+    conda activate venv
+    conda install -c conda-forge spacy
+    conda install -c conda-forge cupy
     python -m spacy download en_core_web_trf
     ```
 
@@ -36,7 +38,7 @@ This Python script pseudonymizes text data using `spaCy` and `Faker`. The script
 
 2. Run the script:
     ```sh
-    python pseudonymize_script.py
+    python pseudoanon.py
     ```
 
 3. Check the output:
