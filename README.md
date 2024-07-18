@@ -13,11 +13,11 @@ This Python script pseudonymizes text data using `spaCy` and `Faker`. The script
 
 ## Requirements
 
-- Python 3.6+
+- Python 3.7+
 - `spaCy`
 - `spaCy-transformers`
 - `Faker`
-- GPU with CUDA Toolkit 12
+- GPU with CUDA Toolkit 12 (Can still work with both CPU and GPU)
 
 ## Installation
 
