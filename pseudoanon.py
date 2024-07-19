@@ -30,11 +30,10 @@ def create_entity_ruler(nlp, name):
 # Add custom EntityRuler to the pipeline
 ruler = nlp.add_pipe("custom_entity_ruler", before="ner")
 
-# Add custom patterns for URLs, emails, and phone numbers
+# Add custom patterns for URLs and emails
 patterns = [
     {"label": "URL", "pattern": [{"LIKE_URL": True}]},
     {"label": "EMAIL", "pattern": [{"LIKE_EMAIL": True}]},
-    {"label": "PHONE", "pattern": [{"ORTH": {"REGEX": r"\b\d{3}[-.\s]?\d{3}[-.\s]?\d{4}\b"}}]},  # Matches various phone number formats
 ]
 
 ruler.add_patterns(custom_companies + patterns)
@@ -49,7 +48,6 @@ def pseudonymize_text(text):
     org_map = {}
     url_map = {}
     email_map = {}
-    phone_map = {}
 
     # Replace recognized entities
     for ent in doc.ents:
@@ -69,10 +67,6 @@ def pseudonymize_text(text):
             if ent.text not in email_map:
                 email_map[ent.text] = fake.email()
             pseudonymized_text = pseudonymized_text.replace(ent.text, email_map[ent.text])
-        elif ent.label_ == "PHONE":
-            if ent.text not in phone_map:
-                phone_map[ent.text] = fake.phone_number()
-            pseudonymized_text = pseudonymized_text.replace(ent.text, phone_map[ent.text])
 
     return pseudonymized_text
 
