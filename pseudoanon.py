@@ -12,11 +12,9 @@ def load_custom_companies(file_path):
     custom_companies = []
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
-            company_name = line.strip()
+            company_name = line.strip().lower()  # Convert to lowercase
             if company_name:
-                # Add both the original and lowercased versions of each company name
                 custom_companies.append({"label": "ORG", "pattern": company_name})
-                custom_companies.append({"label": "ORG", "pattern": company_name.lower()})
     return custom_companies
 
 # Load custom companies from companies.txt
@@ -38,9 +36,15 @@ patterns = [
 
 ruler.add_patterns(custom_companies + patterns)
 
+# Debug: Print the patterns added to the EntityRuler
+print("Patterns added to the EntityRuler:")
+for pattern in custom_companies + patterns:
+    print(pattern)
+
 # Function to pseudonymize text
 def pseudonymize_text(text):
-    doc = nlp(text)
+    lower_text = text.lower()  # Convert the entire text to lowercase
+    doc = nlp(lower_text)
     pseudonymized_text = text
 
     # Create dictionaries to map original entities to fake ones
