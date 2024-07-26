@@ -12,11 +12,9 @@ def load_custom_companies(file_path):
     custom_companies = []
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
-            company_name = line.strip()
+            company_name = line.strip().lower()  # Convert to lowercase
             if company_name:
-                # Add both the original and lowercased versions of each company name
                 custom_companies.append({"label": "ORG", "pattern": company_name})
-                custom_companies.append({"label": "ORG", "pattern": company_name.lower()})
     return custom_companies
 
 # Load custom companies from companies.txt
@@ -38,9 +36,15 @@ patterns = [
 
 ruler.add_patterns(custom_companies + patterns)
 
+# Debug: Print the patterns added to the EntityRuler
+print("Patterns added to the EntityRuler:")
+for pattern in custom_companies + patterns:
+    print(pattern)
+
 # Function to pseudonymize text
 def pseudonymize_text(text):
-    doc = nlp(text)
+    lower_text = text.lower()  # Convert the entire text to lowercase
+    doc = nlp(lower_text)
     pseudonymized_text = text
 
     # Create dictionaries to map original entities to fake ones
@@ -49,24 +53,38 @@ def pseudonymize_text(text):
     url_map = {}
     email_map = {}
 
-    # Replace recognized entities
+    # Print all recognized entities
+    print("Recognized entities:")
     for ent in doc.ents:
-        if ent.label_ == "PERSON":
-            if ent.text not in person_map:
-                person_map[ent.text] = fake.name()
-            pseudonymized_text = pseudonymized_text.replace(ent.text, person_map[ent.text])
-        elif ent.label_ == "ORG":
-            if ent.text not in org_map:
-                org_map[ent.text] = fake.company()
-            pseudonymized_text = pseudonymized_text.replace(ent.text, org_map[ent.text])
-        elif ent.label_ == "URL":
-            if ent.text not in url_map:
-                url_map[ent.text] = fake.uri()
-            pseudonymized_text = pseudonymized_text.replace(ent.text, url_map[ent.text])
-        elif ent.label_ == "EMAIL":
-            if ent.text not in email_map:
-                email_map[ent.text] = fake.email()
-            pseudonymized_text = pseudonymized_text.replace(ent.text, email_map[ent.text])
+        print(f"Text: {ent.text}, Label: {ent.label_}")
+
+    # Replace recognized entities
+    entities = [(ent.start_char, ent.end_char, ent.label_, ent.text) for ent in doc.ents]
+    offset = 0
+
+    for start, end, label, text in entities:
+        if label == "PERSON":
+            if text not in person_map:
+                person_map[text] = fake.name()
+            replacement = person_map[text]
+        elif label == "ORG":
+            if text not in org_map:
+                org_map[text] = fake.company()
+            replacement = org_map[text]
+        elif label == "URL":
+            if text not in url_map:
+                url_map[text] = fake.uri()
+            replacement = url_map[text]
+        elif label == "EMAIL":
+            if text not in email_map:
+                email_map[text] = fake.email()
+            replacement = email_map[text]
+        else:
+            continue
+
+        # Adjust for offset due to previous replacements
+        pseudonymized_text = pseudonymized_text[:start + offset] + replacement + pseudonymized_text[end + offset:]
+        offset += len(replacement) - (end - start)
 
     return pseudonymized_text
 
