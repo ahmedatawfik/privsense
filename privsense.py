@@ -3,9 +3,11 @@ from spacy.pipeline import EntityRuler
 from spacy.language import Language
 from faker import Faker
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app)
 
 # Load spaCy transformer model and Faker instance
 nlp = spacy.load("en_core_web_trf")
