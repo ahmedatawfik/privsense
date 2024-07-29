@@ -2,6 +2,10 @@ import spacy
 from spacy.pipeline import EntityRuler
 from spacy.language import Language
 from faker import Faker
+from flask import Flask, request, jsonify
+
+# Initialize Flask app
+app = Flask(__name__)
 
 # Load spaCy transformer model and Faker instance
 nlp = spacy.load("en_core_web_trf")
@@ -21,12 +25,6 @@ def add_entity_ruler(nlp, patterns):
     ruler = nlp.add_pipe("custom_entity_ruler", before="ner")
     ruler.add_patterns(patterns)
     return ruler
-
-# Function to print added patterns for debugging
-def print_patterns(patterns):
-    print("Patterns added to the EntityRuler:")
-    for pattern in patterns:
-        print(pattern)
 
 # Function to create entity maps and pseudonymize text
 def create_entity_maps(doc):
@@ -84,30 +82,16 @@ def pseudonymize_text(text):
     pseudonymized_text = replace_entities(text, entities, person_map, org_map, url_map, email_map)
     return pseudonymized_text
 
-# Function to read text from a file
-def read_text(file_path):
-    with open(file_path, 'r', encoding='utf-8') as file:
-        return file.read()
-
-# Function to write text to a file
-def write_text(file_path, text):
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(text)
-
-# Main function for example usage
-def main():
-    input_file = 'input.txt'
-    output_file = 'output.txt'
+# Flask route to pseudonymize text
+@app.route('/pseudonymize', methods=['POST'])
+def pseudonymize():
+    data = request.json
+    text = data.get('text', '')
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
     
-    data = read_text(input_file)
-    print("Before:")
-    print(data)
-    
-    pseudonymized_data = pseudonymize_text(data)
-    write_text(output_file, pseudonymized_data)
-    
-    print("\nAfter:")
-    print(pseudonymized_data)
+    pseudonymized_text = pseudonymize_text(text)
+    return jsonify({"pseudonymized_text": pseudonymized_text})
 
 if __name__ == "__main__":
     custom_companies = load_custom_companies('companies.txt')
@@ -117,5 +101,4 @@ if __name__ == "__main__":
     ]
     all_patterns = custom_companies + patterns
     add_entity_ruler(nlp, all_patterns)
-    print_patterns(all_patterns)
-    main()
+    app.run(host='0.0.0.0', port=5000)
