@@ -34,7 +34,6 @@ patterns = [
     {"label": "EMAIL", "pattern": [{"LIKE_EMAIL": True}]},
 ]
 
-
 ruler.add_patterns(custom_companies + patterns)
 
 # Debug: Print the patterns added to the EntityRuler
