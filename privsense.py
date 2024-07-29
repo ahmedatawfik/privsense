@@ -82,13 +82,25 @@ def pseudonymize_text(text):
     pseudonymized_text = replace_entities(text, entities, person_map, org_map, url_map, email_map)
     return pseudonymized_text
 
-# Flask route to pseudonymize text
+# Endpoint to pseudonymize text from JSON
 @app.route('/pseudonymize', methods=['POST'])
-def pseudonymize():
+def pseudonymize_json():
     data = request.json
     text = data.get('text', '')
     if not text:
         return jsonify({"error": "No text provided"}), 400
+    
+    pseudonymized_text = pseudonymize_text(text)
+    return jsonify({"pseudonymized_text": pseudonymized_text})
+
+# Endpoint to pseudonymize text from a file
+@app.route('/pseudonymize-file', methods=['POST'])
+def pseudonymize_file():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file provided"}), 400
+    
+    file = request.files['file']
+    text = file.read().decode('utf-8')
     
     pseudonymized_text = pseudonymize_text(text)
     return jsonify({"pseudonymized_text": pseudonymized_text})
