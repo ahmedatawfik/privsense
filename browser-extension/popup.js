@@ -28,3 +28,10 @@ document.getElementById('pseudonymizeButton').addEventListener('click', () => {
     });
   });
   
+  document.getElementById('copyButton').addEventListener('click', () => {
+    const outputText = document.getElementById('outputText');
+    outputText.select();
+    document.execCommand('copy');
+    alert('Text copied to clipboard!');
+  });
+  

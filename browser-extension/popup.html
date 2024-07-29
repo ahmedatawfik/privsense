@@ -6,23 +6,26 @@
     body {
       font-family: Arial, sans-serif;
       padding: 10px;
+      width: 580px; /* Adjust width according to the default popup width */
     }
     textarea {
       width: 100%;
       height: 100px;
+      margin-bottom: 10px;
     }
     button {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <h2>PriVsense</h2>
   <textarea id="inputText" placeholder="Enter text here..."></textarea>
-  <button id="pseudonymizeButton">Pseudonymized Text</button>
-  <textarea id="outputText" placeholder="Pseudonymized text will appear here..." readonly></textarea>
+  <button id="pseudonymizeButton">Anonymize!</button>
+  <textarea id="outputText" placeholder="Anonymized text will appear here..." readonly></textarea>
+  <button id="copyButton">Copy to Clipboard</button>
 
   <script src="popup.js"></script>
 </body>
