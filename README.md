@@ -13,10 +13,11 @@ This utility pseudonymizes text data using `spaCy` and `Faker`. The script ident
 
 ## Requirements
 
-- Python 3.7+
+- Python 3.11
 - `spaCy`
 - `spaCy-transformers`
 - `Faker`
+- `Flask`
 - GPU with CUDA Toolkit 12 (Can still work with both CPU and GPU)
 
 ## Installation
@@ -28,6 +29,7 @@ This utility pseudonymizes text data using `spaCy` and `Faker`. The script ident
     conda install -c conda-forge spacy
     conda install -c conda-forge cupy
     python -m spacy download en_core_web_trf
+    pip install flask flask-cors
     ```
 
 ## Usage
