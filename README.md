@@ -1,5 +1,5 @@
 
-# PriVsense
+# PriVsense (Pri-V-Sense)
 
 This project pseudonymizes text data using `spaCy` and `Faker`. The project identifies and replaces personal names, organization names, URLs, and emails with pseudonyms, ensuring that sensitive information is anonymized. It is designed to work with text files and can dynamically load custom company names from a specified file. Additionally, it provides a Flask API for easy integration.
 
