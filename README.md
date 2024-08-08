@@ -7,7 +7,7 @@ Masking personally identifiable information (PII) is critically important before
 
 Among the data masking techniques, pseudonymization (https://lnkd.in/gFuHhfKK) is particularly useful in this case because it retains the information needed to avoid confusing the LLM while still protecting sensitive data, making it more useful than anonymization.
 
-This project pseudonymizes text data using `spaCy` and `Faker`. The project identifies and replaces personal names, organization names, URLs, and emails with pseudonyms, ensuring that sensitive information is anonymized before handing over to LLM. It is designed to work with text files and can dynamically load custom company names from a specified file. Additionally, it provides a Flask API for easy integration.
+This project pseudonymizes text data using `spaCy` and `Faker`. The project identifies and replaces personal names, organization names, URLs, and emails with pseudonyms (more entity types to be added later), ensuring that sensitive information is anonymized before handing over to LLM. It is designed to work with text files and can dynamically load custom company names from a specified file. Additionally, it provides a Flask API for easy integration.
 
 ## Features
 
