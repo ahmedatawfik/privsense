@@ -4,6 +4,8 @@ from spacy.language import Language
 from faker import Faker
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import csv
+import os
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -81,8 +83,51 @@ def pseudonymize_text(text):
     for start, end, label, orig_text in entities:
         print(f"Text: {orig_text}, Label: {label}")
 
+    # Debug: Print all recognized entities and their pseudonymized counterparts
+    print("Recognized entities and their pseudonymized counterparts:")
+    for start, end, label, orig_text in entities:
+        if label == "PERSON":
+            pseudonymized = person_map[orig_text]
+        elif label == "ORG":
+            pseudonymized = org_map[orig_text]
+        elif label == "URL":
+            pseudonymized = url_map[orig_text]
+        elif label == "EMAIL":
+            pseudonymized = email_map[orig_text]
+        else:
+            continue
+        print(f"Text: {orig_text}, Label: {label}, Pseudonymized: {pseudonymized}")
+
+    # Write entities to CSV
+    csv_file_path = 'entities.csv'
+    write_entities_to_csv(entities, person_map, org_map, url_map, email_map, csv_file_path)    
+
     pseudonymized_text = replace_entities(text, entities, person_map, org_map, url_map, email_map)
     return pseudonymized_text
+
+# Function to write entities to a CSV file
+def write_entities_to_csv(entities, person_map, org_map, url_map, email_map, csv_file_path):
+    seen_entities = set()   # To avoid duplicate entries in the CSV
+    with open(csv_file_path, mode='w', newline='', encoding='utf-8') as csv_file:
+        fieldnames = ['Original Text', 'Label', 'Pseudonymized Text']
+        writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+        
+        writer.writeheader()
+        for start, end, label, orig_text in entities:
+            if (label, orig_text) not in seen_entities:
+                seen_entities.add((label, orig_text))
+                if label == "PERSON":
+                    pseudonymized = person_map[orig_text]
+                elif label == "ORG":
+                    pseudonymized = org_map[orig_text]
+                elif label == "URL":
+                    pseudonymized = url_map[orig_text]
+                elif label == "EMAIL":
+                    pseudonymized = email_map[orig_text]
+                else:
+                    continue
+                writer.writerow({'Original Text': orig_text, 'Label': label, 'Pseudonymized Text': pseudonymized})
+
 
 # Endpoint to pseudonymize text from JSON
 @app.route('/pseudonymize', methods=['POST'])
