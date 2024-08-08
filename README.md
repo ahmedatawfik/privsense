@@ -22,7 +22,7 @@ This project pseudonymizes text data using `spaCy` and `Faker`. The project iden
 ![image](https://github.com/user-attachments/assets/3d58f163-625c-4364-b4c5-4efe1d755607)
 
 
-## Screenshot
+## Screenshots
 <img width="494" alt="2024-08-06_14-04" src="https://github.com/user-attachments/assets/0639b41d-3169-47d3-9844-117fd0be2362">
 
 ## Requirements
@@ -101,8 +101,7 @@ Tech Solutions
 
 ## Customization
 
-- **Adding More Companies**: Simply add more company names to the `companies.txt` file, one per line.
-- **Handling Case Sensitivity**: The project automatically handles both upper and lower case variations of the company names.
+- **Adding More Companies**: You can add more custom entities for various entity types. Simply add more company names to the `companies.txt` file, one per line.
 
 ## License
 
