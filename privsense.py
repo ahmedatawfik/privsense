@@ -38,7 +38,7 @@ def create_entity_maps(doc):
     for start, end, label, text in entities:
         if label == "PERSON":
             if text not in person_map:
-                person_map[text] = fake.name()
+                person_map[text] = fake.first_name() + " " + fake.last_name()
         elif label == "ORG":
             if text not in org_map:
                 org_map[text] = fake.company()
@@ -137,6 +137,7 @@ def revert_pseudonymized_text(pseudonymized_text, csv_file_path='entities.csv'):
     with open(csv_file_path, mode='r', newline='', encoding='utf-8') as csv_file:
         reader = csv.DictReader(csv_file)
         for row in reader:
+            # Map the entire pseudonymized name back to the original name
             replacements[row['Pseudonymized Text']] = row['Original Text']
 
     for pseudonymized, original in replacements.items():
