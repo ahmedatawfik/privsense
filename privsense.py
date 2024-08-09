@@ -38,7 +38,8 @@ def create_entity_maps(doc):
     for start, end, label, text in entities:
         if label == "PERSON":
             if text not in person_map:
-                person_map[text] = fake.first_name() + " " + fake.last_name()
+                # Ensure the pseudonym consists of a first name and a last name
+                person_map[text] = f"{fake.first_name()} {fake.last_name()}"
         elif label == "ORG":
             if text not in org_map:
                 org_map[text] = fake.company()
