@@ -128,6 +128,21 @@ def write_entities_to_csv(entities, person_map, org_map, url_map, email_map, csv
                     continue
                 writer.writerow({'Original Text': orig_text, 'Label': label, 'Pseudonymized Text': pseudonymized})
 
+# Function to revert pseudonymized text back to original using the CSV file
+def revert_pseudonymized_text(pseudonymized_text, csv_file_path='entities.csv'):
+    if not os.path.exists(csv_file_path):
+        raise FileNotFoundError(f"CSV file {csv_file_path} not found")
+
+    replacements = {}
+    with open(csv_file_path, mode='r', newline='', encoding='utf-8') as csv_file:
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            replacements[row['Pseudonymized Text']] = row['Original Text']
+
+    for pseudonymized, original in replacements.items():
+        pseudonymized_text = pseudonymized_text.replace(pseudonymized, original)
+
+    return pseudonymized_text
 
 # Endpoint to pseudonymize text from JSON
 @app.route('/pseudonymize', methods=['POST'])
@@ -139,6 +154,20 @@ def pseudonymize_json():
     
     pseudonymized_text = pseudonymize_text(text)
     return jsonify({"pseudonymized_text": pseudonymized_text})
+
+# Endpoint to revert pseudonymized text back to original
+@app.route('/revert', methods=['POST'])
+def revert_json():
+    data = request.json
+    text = data.get('text', '')
+    if not text:
+        return jsonify({"error": "No text provided"}), 400
+    
+    try:
+        reverted_text = revert_pseudonymized_text(text)
+        return jsonify({"reverted_text": reverted_text})
+    except FileNotFoundError as e:
+        return jsonify({"error": str(e)}), 400
 
 # Endpoint to pseudonymize text from a file
 @app.route('/pseudonymize-file', methods=['POST'])
